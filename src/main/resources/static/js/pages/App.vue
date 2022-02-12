@@ -7,9 +7,11 @@
     <problem-navigation
         ref="modal"
     />
-    <v-content app>
-      <router-view></router-view>
-    </v-content>
+    <v-main>
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
+    </v-main>
   </v-app>
 </template>
 

@@ -1,7 +1,5 @@
 <template>
-    <v-app-bar app
-        color="primary" elevate-on-scroll scroll-target="#scrolling-techniques-7"
-    >
+    <v-app-bar app color="primary" class="px-3">
       <v-app-bar-nav-icon @click="openNavigationBar"></v-app-bar-nav-icon>
 
       <v-icon class="mx-3" color="accent">mdi-book-edit</v-icon>
