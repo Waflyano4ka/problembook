@@ -1,14 +1,12 @@
 package diplom.problembook.models;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class ProjectUser {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @ManyToOne(optional = false)
     private Role role;
     @ManyToOne(optional = false)
@@ -30,9 +28,9 @@ public class ProjectUser {
 
     }
 
-    public String getId() { return id; }
+    public Long getId() { return id; }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(Long id) { this.id = id; }
 
     public Role getRole() { return role; }
 

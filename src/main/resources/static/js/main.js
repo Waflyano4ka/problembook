@@ -1,14 +1,13 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import VueResource from 'vue-resource'
 import VueRouter from 'vue-router'
 import App from './pages/App.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 import router from './router/index'
+import store from './store/index'
 import colors from 'vuetify/lib/util/colors'
 
-Vue.use(VueResource)
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 
@@ -33,5 +32,6 @@ new Vue({
     vuetify : new Vuetify(),
     render: a => a(App),
     el: '#app',
-    router
+    router,
+    store
 })

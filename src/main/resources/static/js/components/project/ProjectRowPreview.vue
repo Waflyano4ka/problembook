@@ -7,7 +7,7 @@
         </v-sheet>
 
         <v-spacer></v-spacer>
-        <v-sheet class="rounded-xl" style="padding: 2px">
+        <v-sheet class="rounded-xl 2px" style="padding: 2px">
           <v-btn icon small>
             <v-icon v-if="liked" color="red">mdi-heart</v-icon>
             <v-icon v-else>mdi-heart-outline</v-icon>
@@ -67,13 +67,16 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
   export default {
-    props: ['name', 'profile', 'color'],
+    props: ['name', 'color'],
+    computed: mapState(['profile']),
     data: () => ({
       liked: true,
       messages: [
         {
-          from: 'Ты',
+          from: 'Вы',
           message: `Задание`,
           time: '10:42',
         },

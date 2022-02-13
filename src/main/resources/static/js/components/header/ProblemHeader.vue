@@ -21,22 +21,24 @@
 </template>
 
 <script>
-import ProblemAvatar from './ProblemAvatar.vue'
+  import ProblemAvatar from './ProblemAvatar.vue'
 
-export default {
-  components: {
-    ProblemAvatar
-  },
-  props: ['profile'],
-  methods: {
-    theme() {
-      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+  import { mapState } from 'vuex'
+
+  export default {
+    components: {
+      ProblemAvatar
     },
-    openNavigationBar() {
-      this.$emit('openNavigationBar')
+    computed: mapState(['profile']),
+    methods: {
+      theme() {
+        this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+      },
+      openNavigationBar() {
+        this.$emit('openNavigationBar')
+      }
     }
   }
-}
 </script>
 
 <style scoped>

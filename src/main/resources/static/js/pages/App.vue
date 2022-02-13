@@ -1,10 +1,9 @@
 <template>
   <v-app>
     <problem-header
-        :profile="profile"
         @openNavigationBar="openNavigationBar"
     />
-    <problem-navigation
+    <problem-navigation v-if="profile"
         ref="modal"
     />
     <v-main>
@@ -19,20 +18,28 @@
 import ProblemHeader from '../components/header/ProblemHeader.vue'
 import ProblemNavigation from '../components/navigation/ProblemNavigation.vue'
 
+import { mapState } from "vuex";
+
 export default {
   components: {
     ProblemHeader,
     ProblemNavigation
   },
+  computed: mapState(['profile']),
   data() {
     return {
-      profile: frontendData.profile,
+
     }
   },
   methods: {
     openNavigationBar() {
       this.$refs.modal.open()
     },
+  },
+  beforeUpdate() {
+    if (!this.profile){
+      this.$router.replace('/')
+    }
   }
 }
 </script>

@@ -19,7 +19,7 @@
       </v-app-bar>
       <v-card-text>
         <v-container>
-          <v-text-field color="secondary" label="Название*" hint="Название должно быть не меньше 1 и не больше 30 символов" v-model="name"/>
+          <v-text-field color="secondary" label="Название*" hint="Название должно быть не меньше 1 и не больше 100 символов" v-model="name"/>
           <v-layout align-center justify-start row class="mb-2">
             <v-text-field color="secondary" label="Код поключения*" v-model="key" disabled class="ps-3 mt-5"/>
             <v-btn icon @click="refreshKey" class="mb-3">
@@ -32,7 +32,6 @@
             <project-row-preview
                 :color="showColor()"
                 :name="showName()"
-                :profile="profile"
             />
             <v-spacer/>
             <v-color-picker show-swatches hide-inputs v-model="picker"></v-color-picker>
@@ -58,7 +57,6 @@ export default {
     components: {
       ProjectRowPreview
     },
-    props: ['profile'],
     data () {
       return {
         dialog: false,

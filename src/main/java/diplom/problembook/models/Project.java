@@ -6,7 +6,8 @@ import java.util.Collection;
 @Entity
 public class Project {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String color;
     private String keyToConnect;
@@ -27,9 +28,9 @@ public class Project {
 
     }
 
-    public String getId() { return id; }
+    public Long getId() { return id; }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
 

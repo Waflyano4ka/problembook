@@ -1,47 +1,70 @@
 <template>
-  <v-card width="400" min-height="300" class="me-5 mb-5">
-    <v-img height="150px" src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg">
+  <v-card class="mb-5" :color="project.color">
+    <v-sheet height="150px" :color="project.color">
       <v-app-bar flat color="rgba(0, 0, 0, 0)">
-        <v-toolbar-title class="text-h6 white--text">
-          Название проекта
-        </v-toolbar-title>
+        <v-sheet style="padding-left: 16px; padding-right: 16px; margin-left: -16px" class="rounded-r-xl" max-width="calc(100% - 70px)">
+          <v-toolbar-title class="text-h6" v-text="project.name"/>
+        </v-sheet>
 
         <v-spacer></v-spacer>
-
-        <v-btn color="white" icon>
-          <v-icon v-if="liked" color="red">mdi-heart</v-icon>
-          <v-icon v-else>mdi-heart-outline</v-icon>
-        </v-btn>
-        <v-btn color="white" icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
+        <v-sheet class="rounded-xl px-2" style="padding: 2px">
+          <v-btn icon small>
+            <v-icon v-if="liked" color="red">mdi-heart</v-icon>
+            <v-icon v-else>mdi-heart-outline</v-icon>
+          </v-btn>
+          <v-btn icon small>
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </v-sheet>
       </v-app-bar>
 
-      <v-card-title class="white--text">
-        <v-avatar size="56">
-          <img
-              alt="user"
-              src="https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
-          >
-        </v-avatar>
-        <p class="ml-3">
-          John Doe
-        </p>
+      <v-card-title class="ps-0">
+        <v-sheet width="100%" height="70" class="ps-4 rounded-tr-xl">
+          <v-layout align-center justify-start row fill-height class="mt-0">
+            <v-avatar size="56" class="ms-3">
+              <img
+                  alt="user"
+                  :src="project.creator.image"
+              >
+            </v-avatar>
+            <v-col elevation="0">
+              <v-card class="mt-5" elevation="0" max-width="290">
+                <v-toolbar-title v-text="project.creator.name"/>
+              </v-card>
+            </v-col>
+          </v-layout>
+        </v-sheet>
       </v-card-title>
-    </v-img>
+    </v-sheet>
 
-    <v-card-text>
-      <div class="font-weight-bold ml-8 mb-2">
-        Today
-      </div>
+    <v-card-text class="ps-0 pt-0">
+      <v-sheet class="pt-1 rounded-br-xl">
+        <v-divider class="mb-3"/>
+        <div class="font-weight-bold ml-8 pb-2">
+          Пусто
+        </div>
+      </v-sheet>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
   export default {
+    props: ['project'],
     data: () => ({
-      liked: true
+      liked: false,
+      messages: [
+        {
+          from: 'Вы',
+          message: `Задание`,
+          time: '10:42',
+        },
+        {
+          from: 'Джон Дое',
+          message: 'Что-то сделать',
+          time: '13:27',
+        },
+      ],
     }),
   }
 </script>

@@ -35,8 +35,10 @@
 </template>
 
 <script>
+  import { mapState } from "vuex";
+
   export default {
-    props: ['profile'],
+    computed: mapState(['profile']),
     data: () => ({
       user: {
         fullName: 'John Doe',
