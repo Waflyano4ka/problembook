@@ -1,7 +1,7 @@
 <template>
   <v-card width="400" min-height="300" class="me-5 mb-5" :color="color">
     <v-sheet height="150px" :color="color">
-      <v-app-bar flat color="rgba(0, 0, 0, 0)">
+      <v-app-bar flat color="rgba(0, 0, 0, 0)" height="64">
         <v-sheet style="padding-left: 16px; padding-right: 16px; margin-left: -16px" class="rounded-r-xl" max-width="250">
           <v-toolbar-title class="text-h6" v-text="name" />
         </v-sheet>

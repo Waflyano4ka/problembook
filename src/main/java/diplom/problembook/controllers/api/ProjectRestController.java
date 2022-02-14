@@ -1,8 +1,10 @@
 package diplom.problembook.controllers.api;
 
 import diplom.problembook.models.Project;
+import diplom.problembook.models.User;
 import diplom.problembook.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +23,8 @@ public class ProjectRestController {
     }
 
     @PostMapping
-    public Project create(@RequestBody Project project) {
+    public Project create(@RequestBody Project project, @AuthenticationPrincipal User user) {
+        project.setUser(user);
         return projectRepository.save(project);
     }
 }

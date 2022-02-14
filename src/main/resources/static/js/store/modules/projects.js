@@ -22,7 +22,7 @@ const actions = {
     async ADD_PROJECT_TO_DB({ commit }, project) {
         try {
             const response = await axios.post(resourceApi, project)
-            commit('ADD_PROJECTS_TO_STATE', response.data)
+            commit('ADD_PROJECT_TO_DB', response.data)
         } catch (error) {
             console.error(error)
         }
