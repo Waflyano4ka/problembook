@@ -14,8 +14,6 @@ public class Project {
     private Boolean active;
     @ManyToOne(optional = true)
     private User user;
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
-    private Collection<ProjectUser> projectUsers;
 
     public Project(String name, String color, String keyToConnect, Boolean active) {
         this.name = name;
@@ -51,8 +49,4 @@ public class Project {
     public User getUser() { return user; }
 
     public void setUser(User user) { this.user = user; }
-
-    public Collection<ProjectUser> getProjectUsers() { return projectUsers; }
-
-    public void setProjectUsers(Collection<ProjectUser> projectUsers) { this.projectUsers = projectUsers; }
 }

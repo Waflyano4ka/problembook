@@ -11,19 +11,22 @@
         <router-view></router-view>
       </v-container>
     </v-main>
+    <problem-alert/>
   </v-app>
 </template>
 
 <script>
 import ProblemHeader from '../components/header/ProblemHeader.vue'
 import ProblemNavigation from '../components/navigation/ProblemNavigation.vue'
+import ProblemAlert from '../components/alert/ProblemAlert.vue'
 
 import { mapState } from "vuex";
 
 export default {
   components: {
     ProblemHeader,
-    ProblemNavigation
+    ProblemNavigation,
+    ProblemAlert
   },
   computed: mapState(['profile']),
   data() {

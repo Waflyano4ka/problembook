@@ -116,7 +116,6 @@ export default {
 
       })
       if (!this.formHasErrors){
-        console.log(this.form)
         this.ADD_PROJECT_TO_DB(this.form)
 
         this.dialog = false

@@ -46,7 +46,7 @@
       drawer: false,
       items: [
         ['mdi-application-edit', 'Проекты', '/projects'],
-        ['mdi-archive-remove', 'Архив', '/'],
+        ['mdi-archive-remove', 'Архив', '/archive'],
       ],
     }),
     methods: {

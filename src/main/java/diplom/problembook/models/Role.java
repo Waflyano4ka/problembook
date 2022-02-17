@@ -9,8 +9,6 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-    private Collection<ProjectUser> projectUsers;
 
     public Role(String name) {
         this.name = name;
@@ -27,8 +25,4 @@ public class Role {
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
-
-    public Collection<ProjectUser> getProjectUsers() { return projectUsers; }
-
-    public void setProjectUsers(Collection<ProjectUser> projectUsers) { this.projectUsers = projectUsers; }
 }
