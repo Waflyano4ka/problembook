@@ -15,14 +15,18 @@ export default new Vuetify({
     theme: {
         themes: {
             light: {
-                primary: colors.orange.lighten4, // #E53935
-                secondary: colors.orange.lighten2, // #FFCDD2
-                accent: colors.orange.accent3, // #3F51B5
+                primary: colors.orange.lighten4,
+                secondary: colors.orange.lighten2,
+                accent: colors.orange.accent3,
+                shadow: colors.amber.lighten5,
+                redAccent: colors.red.lighten1,
             },
             dark: {
-                primary: colors.purple .darken4, // #E53935
-                secondary: colors.purple .darken2, // #FFCDD2
-                accent: colors.purple .accent2, // #3F51B5
+                primary: colors.purple .darken4,
+                secondary: colors.purple .darken2,
+                accent: colors.purple .accent2,
+                shadow: "#241d2a",
+                redAccent: colors.red.accent3,
             }
         },
     },

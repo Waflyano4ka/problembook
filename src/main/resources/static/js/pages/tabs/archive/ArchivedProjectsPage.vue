@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import ArchivedProjectRow from "../../components/project/ArchivedProjectRow.vue";
+import ArchivedProjectRow from "../../../components/archive/ArchivedProjectRow.vue";
 
 import {mapActions, mapGetters} from "vuex";
 

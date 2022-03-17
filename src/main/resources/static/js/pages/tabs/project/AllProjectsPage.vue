@@ -15,9 +15,9 @@
 </template>
 
 <script>
-  import ProjectRow from '../../components/project/ProjectRow.vue'
-  import ProjectCreate from '../../components/project/ProjectCreate.vue'
-  import ProjectJoin from '../../components/project/ProjectJoin.vue'
+  import ProjectRow from '../../../components/project/ProjectRow.vue'
+  import ProjectCreate from '../../../components/project/ProjectCreate.vue'
+  import ProjectJoin from '../../../components/project/ProjectJoin.vue'
 
   import {mapActions, mapGetters, mapState} from 'vuex'
 

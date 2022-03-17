@@ -3,7 +3,7 @@
       <v-app-bar-nav-icon @click="openNavigationBar"></v-app-bar-nav-icon>
 
       <v-icon class="mx-3" color="accent">mdi-book-edit</v-icon>
-      <v-toolbar-title>Problem Book</v-toolbar-title>
+      <v-toolbar-title class="font-weight-medium">Problem Book</v-toolbar-title>
 
       <v-spacer></v-spacer>
 

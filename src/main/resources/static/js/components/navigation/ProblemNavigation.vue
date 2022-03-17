@@ -9,7 +9,7 @@
           <v-icon>mdi-book-edit</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-toolbar-title>Problem Book</v-toolbar-title>
+          <v-toolbar-title class="font-weight-medium">Problem Book</v-toolbar-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
