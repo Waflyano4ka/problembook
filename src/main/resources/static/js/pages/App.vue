@@ -3,7 +3,7 @@
     <problem-header
         @openNavigationBar="openNavigationBar"
     />
-    <problem-navigation v-if="profile"
+    <problem-navigation
         ref="modal"
     />
     <v-main>

@@ -6,6 +6,8 @@ import diplom.problembook.models.User;
 import diplom.problembook.repositories.ProjectRepository;
 import diplom.problembook.repositories.ProjectUserRepository;
 import diplom.problembook.repositories.RoleRepository;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,5 +134,22 @@ public class ProjectsRestController {
         );
 
         return projectUserRepository.save(projectUser);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity updateProject(@PathVariable(value = "id") Project project,
+                                        @RequestBody String request,
+                                        @AuthenticationPrincipal User user) {
+        JSONObject data = new JSONObject(request);
+        if (project.getUser().getId().equals(user.getId())) {
+            project.setName(data.getString("name"));
+            project.setColor(data.getString("color"));
+            project.setKeyToConnect(data.getString("keyToConnect"));
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(projectRepository.save(project));
+        }
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Вы не являетесь владельцем данного проекта");
     }
 }

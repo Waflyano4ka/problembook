@@ -8,16 +8,17 @@ const state = {
         project: {},
         members: [],
     },
-    search: null,
-    pages: ["TASKS", "MEMBERS", "SETTINGS"],
-    currentPage: null,
+    search: " ",
+    currentHash: "#tasks",
     currentMemberId: null
 }
 
 const getters = {
     OBJECT: state => state.object.project,
     MEMBERS: state => state.object.members.filter(member => member.access),
+    READERS: state => state.object.members.filter(member => member.access && member.role.name === 'READER'),
     BLOKED_MEMBERS: state => state.object.members.filter(member => !member.access),
+    VISIBLE_SEARCH: state => state.currentHash !== "#settings"
 }
 
 const actions = {
@@ -89,6 +90,7 @@ const actions = {
 }
 
 const mutations = {
+    EDIT_PROJECT_TO_STATE: (state, project) => state.object.project = project,
     SET_PROJECT_TO_STATE: (state, project) => state.object.project = project,
     SET_MEMBERS_TO_STATE: (state, members) => state.object.members = members,
     UPDATE_MEMBER_TO_STATE (state, member) {
@@ -104,7 +106,7 @@ const mutations = {
             const index = state.object.members.findIndex(item => item.id === member.id)
             state.object.members.splice(index, 1, member)
         })
-    }
+    },
 }
 
 export default {

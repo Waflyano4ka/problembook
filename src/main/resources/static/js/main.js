@@ -20,6 +20,7 @@ export default new Vuetify({
                 accent: colors.orange.accent3,
                 shadow: colors.amber.lighten5,
                 redAccent: colors.red.lighten1,
+                success: colors.lightGreen.darken1
             },
             dark: {
                 primary: colors.purple .darken4,

@@ -4,12 +4,13 @@ import Vuex from 'vuex'
 import projects from './modules/projects';
 import project from './modules/project';
 import role from './modules/role';
+import task from './modules/task';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     modules: {
-        projects, project, role
+        projects, project, role, task
     },
     state: {
         profile: frontendData.profile,
@@ -25,7 +26,16 @@ export default new Vuex.Store({
             catch (err) {
                 return false
             }
-        }
+        },
+        CURRENT_ROLE (state) {
+            try {
+                const index = project.state.object.members.findIndex(item => item.user.id === state.profile.id)
+                return project.state.object.members[index].role.name
+            }
+            catch (e){
+
+            }
+        },
     },
     mutations: {
         SET_SNACKBAR_TO_STATE: (state, snackbar) => state.snackbar = snackbar

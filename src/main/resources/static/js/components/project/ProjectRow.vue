@@ -4,7 +4,7 @@
       <v-sheet height="150px" :color="projectUser.project.color">
         <v-app-bar flat color="rgba(0, 0, 0, 0)" height="64">
           <v-sheet style="padding-left: 16px; padding-right: 16px; margin-left: -16px" class="rounded-r-xl" max-width="calc(100% - 70px)">
-            <router-link :to="{ name: 'projectPage', params: { id: projectUser.project.id } }" custom v-slot="{ navigate }">
+            <router-link :to="{ name: 'projectPage', params: { id: projectUser.project.id }, hash: '#tasks' }" custom v-slot="{ navigate }">
               <v-toolbar-title @click="navigate" @keypress.enter="navigate" class="nav-text-title text-h6" v-text="projectUser.project.name"/>
             </router-link>
           </v-sheet>
@@ -26,7 +26,9 @@
                 </v-btn>
               </template>
               <v-list>
-                <v-list-item @click="">
+                <v-list-item
+                    @click="$router.push({ name: 'projectPage', params: { id: projectUser.project.id }, hash: '#settings'})"
+                    v-if="projectUser.project.user.id === profile.id">
                   <v-list-item-title>
                     Настройки
                   </v-list-item-title>

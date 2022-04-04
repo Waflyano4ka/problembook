@@ -1,6 +1,6 @@
 <template>
     <v-app-bar app color="primary" class="px-3">
-      <v-app-bar-nav-icon @click="openNavigationBar"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon  v-if="profile" @click="openNavigationBar"></v-app-bar-nav-icon>
 
       <v-icon class="mx-3" color="accent">mdi-book-edit</v-icon>
       <v-toolbar-title class="font-weight-medium">Problem Book</v-toolbar-title>

@@ -5,8 +5,6 @@ const resourceApi = '/api/roles'
 function findByName(roleName) {
     let index = -1
     for(let i = 0; i < state.roles.length; i++) {
-        console.log(state.roles[i].name)
-        console.log(roleName)
         if (state.roles[i].name === roleName){
             index = i
         }

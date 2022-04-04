@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from '../../router/index'
 
 const resourceApi = '/api/projects'
 
@@ -42,6 +43,22 @@ const actions = {
             })
         } catch (error) {
             console.error(error)
+        }
+    },
+    async EDIT_PROJECT_IN_DB({ commit }, project) {
+        try {
+            const idProject = router.currentRoute.params.id
+            const response = await axios.put(resourceApi + '/' + idProject, project)
+            commit('EDIT_PROJECT_TO_STATE', response.data)
+            await this.dispatch('SET_SNACKBAR', {
+                text: "Проект был изменен",
+                color: "success"
+            })
+        } catch (err) {
+            await this.dispatch('SET_SNACKBAR', {
+                text: err.response.data,
+                color: "warning"
+            })
         }
     },
     async JOIN_PROJECT({ commit }, keyToConnect) {
@@ -110,9 +127,9 @@ const actions = {
 const mutations = {
     SET_PROJECTS_TO_STATE: (state, projects) => state.projects = projects,
     ADD_PROJECT_TO_STATE: (state, project) => state.projects.push(project),
-    UPDATE_PROJECT_TO_STATE (state, project) {
-        const index = state.projects.findIndex(item => item.id === project.id)
-        state.projects.splice(index, 1, project)
+    UPDATE_PROJECT_TO_STATE (state, projectUser) {
+        const index = state.projects.findIndex(item => item.id === projectUser.id)
+        state.projects.splice(index, 1, projectUser)
     },
     DELETE_PROJECT_FROM_STATE (state, id) {
         const index = state.projects.findIndex(item => item.id === id)

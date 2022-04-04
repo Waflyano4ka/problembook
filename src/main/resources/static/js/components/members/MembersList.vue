@@ -9,7 +9,7 @@
     <v-subheader inset>Администраторы
       <v-divider inset></v-divider>
     </v-subheader>
-    <member-row v-for="member in MEMBERS.filter(member => member.role.name === 'CREATOR')"
+    <member-row v-for="member in MEMBERS.filter(member => member.role.name === 'CREATOR' && contains(member.user.name))"
                 :key="member.id"
                 :profile="member"
                 :roles="ROLES"
@@ -17,7 +17,7 @@
     <v-subheader inset>Редакторы
       <v-divider inset></v-divider>
     </v-subheader>
-    <member-row v-for="member in MEMBERS.filter(member => member.role.name === 'REDACTOR')"
+    <member-row v-for="member in MEMBERS.filter(member => member.role.name === 'REDACTOR' && contains(member.user.name))"
                 :key="member.id"
                 :profile="member"
                 :roles="ROLES.filter(role => role !== 'CREATOR')"
@@ -27,7 +27,7 @@
     <v-subheader inset>Читатели
       <v-divider inset></v-divider>
     </v-subheader>
-    <member-row v-for="member in MEMBERS.filter(member => member.role.name === 'READER')"
+    <member-row v-for="member in MEMBERS.filter(member => member.role.name === 'READER' && contains(member.user.name))"
                 :key="member.id"
                 :profile="member"
                 :roles="ROLES.filter(role => role !== 'CREATOR')"
@@ -37,7 +37,7 @@
     <v-subheader inset v-if="CREATOR_BOOL && BLOKED_MEMBERS.length">Заблокированные пользователи
       <v-divider inset></v-divider>
     </v-subheader>
-    <blocked-member-row v-for="member in BLOKED_MEMBERS"
+    <blocked-member-row v-for="member in BLOKED_MEMBERS.filter(blokedMember => contains(blokedMember.user.name))"
                 :key="member.id"
                 :profile="member"
                 :blockUser="blockUser"
@@ -71,13 +71,16 @@ export default {
     },
     kickUser() {
       this.DELETE_MEMBER_FROM_DB(this.$route.params.id)
+    },
+    contains(string) {
+      if (this.$store.state.search)
+        return string.includes(this.$store.state.search)
+      return true
     }
   },
   mounted() {
     this.GET_MEMBERS_FORM_DB(this.$route.params.id)
     this.GET_ROLES_FORM_DB()
-
-    this.$store.state.currentPage = this.$store.state.project.pages[1]
   },
 }
 </script>
