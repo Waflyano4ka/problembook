@@ -46,7 +46,7 @@
                 {{ profile.user.locale }}
               </v-list-item-subtitle>
             </v-list-item>
-            <v-row class="px-7">
+            <v-row class="px-7" v-if="!archiveBool">
               <v-select class="my-5"
                         v-model="profile.role.name"
                         :items="roles"
@@ -80,7 +80,7 @@ import KickButton from './buttons/KickButton.vue'
 
 export default {
   components: { BlockButton, KickButton },
-  props: ['profile', 'roles', 'blockUser', 'kickUser'],
+  props: ['profile', 'roles', 'blockUser', 'kickUser', 'archiveBool'],
   data: () => ({
     action: 'mdi-silverware-fork-knife',
     active: false,

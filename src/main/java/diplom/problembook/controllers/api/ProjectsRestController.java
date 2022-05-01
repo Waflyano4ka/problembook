@@ -34,11 +34,24 @@ public class ProjectsRestController {
         this.roleRepository = roleRepository;
     }
 
+    /**
+     * Этот метод передает все проекты к которым есть доспу у пользователя
+     *
+     * @param user Данные аунтификации пользователя
+     * @return Iterable<ProjectUser> Лист проектов
+     */
     @GetMapping
     public Iterable<ProjectUser> get(@AuthenticationPrincipal User user){
-        return projectUserRepository.findByUser(user).stream().filter(ProjectUser::getAccess).toList();
+        return projectUserRepository.findByUser(user).stream().filter(ProjectUser::getAccess).filter(ProjectUser::ProjectUserNotDeleted).toList();
     }
 
+    /**
+     * Этот метод создает или изменяет участника-проекта к которому хочет присоединиться пользователь
+     *
+     * @param keyToConnect Ключ подключения
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity Созданный или измененный данные участника-проекта
+     */
     @GetMapping("/{keyToConnect}")
     public ResponseEntity joinToProject(@PathVariable(value = "keyToConnect") String keyToConnect, @AuthenticationPrincipal User user){
         List<Project> projects = projectRepository.findByKeyToConnect(keyToConnect);
@@ -51,9 +64,17 @@ public class ProjectsRestController {
                                 .status(HttpStatus.BAD_REQUEST)
                                 .body("Вы заблокированы в этом проекте");
                     }
-                    return ResponseEntity
-                            .status(HttpStatus.BAD_REQUEST)
-                            .body("Вы уже есть в этом проекте");
+                    if (projectsUser.ProjectUserNotDeleted())
+                        return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body("Вы уже есть в этом проекте");
+                    else {
+                        projectsUser.setDeleted(false);
+                        projectsUser.setRole(roleRepository.findByName("READER").get(0));
+                        return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(projectUserRepository.save(projectsUser));
+                    }
                 }
             }
 
@@ -75,24 +96,33 @@ public class ProjectsRestController {
                 .body("Ключ недействиетельный либо, указан неверно");
     }
 
+    /**
+     * Добавление проекта в избранные
+     *
+     * @param projectUser Участник
+     * @return ProjectUser Возращает измененное значение участника
+     */
     @GetMapping("/{id}/like")
     public ProjectUser like(@PathVariable(value = "id") ProjectUser projectUser){
         projectUser.setLiked(!projectUser.getLiked());
         return projectUserRepository.save(projectUser);
     }
 
+    /**
+     * Покинуть проект
+     *
+     * @param projectUser Участник
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity Возвращает измененное значение участника
+     */
     @GetMapping("/{id}/leave")
     public ResponseEntity leave(@PathVariable(value = "id") ProjectUser projectUser, @AuthenticationPrincipal User user){
         if (!projectUser.getProject().getUser().getId().equals(user.getId())) {
-            projectUserRepository.delete(projectUser);
-
-            HashMap<Object, Object> data = new HashMap<>();
-            data.put("id", projectUser.getId());
-            data.put("name", projectUser.getProject().getName());
+            projectUser.setDeleted(true);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(data);
+                    .body(projectUserRepository.save(projectUser));
         }
         else {
             return ResponseEntity
@@ -101,6 +131,13 @@ public class ProjectsRestController {
         }
     }
 
+    /**
+     * Архивация проекта
+     *
+     * @param projectUser Участник
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity врзвращает измененное значение проекта
+     */
     @GetMapping("/{id}/archive")
     public ResponseEntity archive(@PathVariable(value = "id") ProjectUser projectUser, @AuthenticationPrincipal User user){
         Project project = projectUser.getProject();
@@ -113,13 +150,18 @@ public class ProjectsRestController {
                     .status(HttpStatus.OK)
                     .body(projectUserRepository.findById(projectUser.getId()).orElseThrow());
         }
-        else {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Вы не являетесь владельцем данного проекта");
-        }
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Вы не являетесь владельцем данного проекта");
     }
 
+    /**
+     * Создание нового проекта
+     *
+     * @param project Данные проекта
+     * @param user Данные аунтификации пользователя
+     * @return ProjectUser Возвращает значение участника
+     */
     @PostMapping
     public ProjectUser create(@RequestBody Project project, @AuthenticationPrincipal User user) {
         project.setUser(user);
@@ -135,6 +177,15 @@ public class ProjectsRestController {
 
         return projectUserRepository.save(projectUser);
     }
+
+    /**
+     * Обновление данных проекта
+     *
+     * @param project Проект
+     * @param request Изменяемые значения
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity Возвращает измененный проект
+     */
     @PutMapping("/{id}")
     public ResponseEntity updateProject(@PathVariable(value = "id") Project project,
                                         @RequestBody String request,

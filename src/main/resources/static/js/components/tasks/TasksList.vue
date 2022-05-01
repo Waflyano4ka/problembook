@@ -34,6 +34,7 @@
 import TaskCreate from './TaskCreate.vue'
 import TaskRow from './TaskRow.vue'
 import {mapActions, mapState, mapGetters} from "vuex";
+import router from "../../router";
 
 export default {
   components: {

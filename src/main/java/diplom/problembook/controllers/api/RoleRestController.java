@@ -35,11 +35,25 @@ public class RoleRestController {
         this.projectUserRepository = projectUserRepository;
     }
 
+    /**
+     * Получение списка ролей
+     *
+     * @param user Данные аунтификации пользователя
+     * @return Iterable<Role> Список ролей
+     */
     @GetMapping
     public Iterable<Role> get(@AuthenticationPrincipal User user){
         return roleRepository.findAll();
     }
 
+    /**
+     * Изменение роли участника
+     *
+     * @param project Проект
+     * @param request Данные о изменении роли
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity Список измененных пользователей
+     */
     @PutMapping("/{id}/change")
     public ResponseEntity changeRoles(@PathVariable(value = "id") Project project,
                                       @RequestBody String request,
@@ -55,9 +69,14 @@ public class RoleRestController {
                     try {
                         for (int j = 0; j < projectUsers.size(); j++) {
                             if (projectUsersID == projectUsers.get(j).getId()) {
-                                ProjectUser changedProject = projectUserRepository.findById(projectUsersID).orElseThrow();
-                                changedProject.setRole(roleRepository.findByName(roleName).get(0));
-                                changedProjectUsers.add(projectUserRepository.save(changedProject));
+                                if (projectUsers.get(j).ProjectUserNotDeleted()){
+                                    ProjectUser changedProject = projectUserRepository.findById(projectUsersID).orElseThrow();
+                                    changedProject.setRole(roleRepository.findByName(roleName).get(0));
+                                    changedProjectUsers.add(projectUserRepository.save(changedProject));
+                                }
+                                return ResponseEntity
+                                        .status(HttpStatus.BAD_REQUEST)
+                                        .body("Пользователь не состоит в проекте");
                             }
                         }
                     }

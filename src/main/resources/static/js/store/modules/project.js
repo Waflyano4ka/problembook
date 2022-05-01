@@ -26,6 +26,10 @@ const actions = {
         try {
             const response = await axios.get(resourceApi + '/' + id)
             commit('SET_PROJECT_TO_STATE', response.data)
+
+            if (!response.data.active && router.currentRoute.name !== 'archivePage'){
+                await router.push({ name: 'archivePage'})
+            }
         } catch (err) {
             await router.replace({ name: 'allProjectsPage'})
             await this.dispatch('SET_SNACKBAR', {

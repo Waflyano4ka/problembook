@@ -15,6 +15,7 @@ public class ProjectUser {
     private Project project;
     private Boolean liked;
     private Boolean access;
+    private Boolean deleted;
 
     public ProjectUser(Role role, User user, Project project, Boolean liked, Boolean access) {
         this.role = role;
@@ -22,6 +23,7 @@ public class ProjectUser {
         this.project = project;
         this.liked = liked;
         this.access = access;
+        this.deleted = false;
     }
 
     public ProjectUser() {
@@ -51,4 +53,16 @@ public class ProjectUser {
     public Boolean getAccess() { return access; }
 
     public void setAccess(Boolean access) { this.access = access; }
+
+    public Boolean getDeleted() { return deleted; }
+
+    public void setDeleted(Boolean deleted) { this.deleted = deleted; }
+
+
+
+    public Boolean ProjectUserNotDeleted() {
+        if (deleted != null)
+            return !deleted;
+        return true;
+    }
 }

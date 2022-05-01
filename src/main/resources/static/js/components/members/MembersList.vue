@@ -1,7 +1,7 @@
 <template>
   <v-list subheader two-line>
     <v-col cols="12" class="px-4 pb-0 pt-4">
-      <v-btn block color="secondary" v-if="CHANGE_ROLE_AMOUNT" @click="saveChangedRoles">
+      <v-btn block color="secondary" v-if="CHANGE_ROLE_AMOUNT && !archiveBool" @click="saveChangedRoles">
         Сохранить изменения ролей
       </v-btn>
     </v-col>
@@ -13,6 +13,7 @@
                 :key="member.id"
                 :profile="member"
                 :roles="ROLES"
+                :archive-bool="archiveBool"
     />
     <v-subheader inset>Редакторы
       <v-divider inset></v-divider>
@@ -23,6 +24,7 @@
                 :roles="ROLES.filter(role => role !== 'CREATOR')"
                 :blockUser="blockUser"
                 :kickUser="kickUser"
+                :archive-bool="archiveBool"
     />
     <v-subheader inset>Читатели
       <v-divider inset></v-divider>
@@ -33,15 +35,16 @@
                 :roles="ROLES.filter(role => role !== 'CREATOR')"
                 :blockUser="blockUser"
                 :kickUser="kickUser"
+                :archive-bool="archiveBool"
     />
     <v-subheader inset v-if="CREATOR_BOOL && BLOKED_MEMBERS.length">Заблокированные пользователи
       <v-divider inset></v-divider>
     </v-subheader>
     <blocked-member-row v-for="member in BLOKED_MEMBERS.filter(blokedMember => contains(blokedMember.user.name))"
-                :key="member.id"
-                :profile="member"
-                :blockUser="blockUser"
-                :kickUser="kickUser"
+                        :key="member.id"
+                        :profile="member"
+                        :blockUser="blockUser"
+                        :kickUser="kickUser"
     />
   </v-list>
 </template>
@@ -53,6 +56,7 @@ import {mapActions, mapGetters} from "vuex";
 
 export default {
   components: { MemberRow, BlockedMemberRow },
+  props: ['archiveBool'],
   data () {
     return {
 

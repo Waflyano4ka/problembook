@@ -2,7 +2,9 @@
   <v-card class="mb-5 repeating-gradient" :color="projectUser.project.color">
     <v-app-bar flat color="rgba(0, 0, 0, 0)" height="64">
       <v-sheet style="padding-left: 16px; padding-right: 16px; margin-left: -16px" class="rounded-r-xl" max-width="calc(100% - 70px)">
-        <v-toolbar-title class="text-h6" v-text="projectUser.project.name" />
+        <router-link :to="{ name: 'archivePage', params: { id: projectUser.project.id }, hash: '#tasks' }" custom v-slot="{ navigate }">
+          <v-toolbar-title @click="navigate" @keypress.enter="navigate" class="nav-text-title text-h6" v-text="projectUser.project.name"/>
+        </router-link>
       </v-sheet>
 
       <v-spacer></v-spacer>
@@ -17,11 +19,6 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item @click="">
-              <v-list-item-title>
-                Настройки
-              </v-list-item-title>
-            </v-list-item>
             <v-list-item v-if="projectUser.project.user.id === profile.id" @click="archivingProject">
               <v-list-item-title>
                 Восстановить
@@ -72,7 +69,7 @@ import {mapActions, mapState} from "vuex";
         this.ARCHIVE_PROJECT(this.projectUser.id)
       },
       leaveProject() {
-        this.LEAVE_PROJECT(this.projectUser)
+        this.LEAVE_PROJECT(this.projectUser.id)
       }
     }
   }
@@ -87,4 +84,8 @@ import {mapActions, mapState} from "vuex";
     rgba(0,0,255,.25) 10px
     );
   }
+.nav-text-title:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 </style>

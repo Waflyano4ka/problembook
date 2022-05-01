@@ -65,10 +65,18 @@ const actions = {
         try {
             const response = await axios.get(resourceApi + '/' + keyToConnect.key)
             commit('ADD_PROJECT_TO_STATE', response.data)
-            await this.dispatch('SET_SNACKBAR', {
-                text: "Вы присоединились к проекту",
-                color: "success"
-            })
+            if (response.data.project.active) {
+                await this.dispatch('SET_SNACKBAR', {
+                    text: "Вы присоединились к проекту",
+                    color: "success"
+                })
+            }
+            else {
+                await this.dispatch('SET_SNACKBAR', {
+                    text: "Вы присоединились к архивированному проекту",
+                    color: "success"
+                })
+            }
         } catch (err) {
             await this.dispatch('SET_SNACKBAR', {
                 text: err.response.data,
@@ -112,7 +120,7 @@ const actions = {
             const response = await axios.get(resourceApi + '/' + id +'/leave')
             commit('DELETE_PROJECT_FROM_STATE', response.data.id)
             await this.dispatch('SET_SNACKBAR', {
-                text: "Вы покинули проект \"" + response.data.name + "\"",
+                text: "Вы покинули проект \"" + response.data.project.name + "\"",
                 color: "info"
             })
         } catch (err) {
