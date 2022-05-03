@@ -11,6 +11,7 @@ public class Project {
     private String name;
     private String color;
     private String keyToConnect;
+    private String dailyMessage;
     private Boolean active;
     @ManyToOne(optional = true)
     private User user;
@@ -41,6 +42,10 @@ public class Project {
     public String getKeyToConnect() { return keyToConnect; }
 
     public void setKeyToConnect(String keyToConnect) { this.keyToConnect = keyToConnect; }
+
+    public String getDailyMessage() { return dailyMessage; }
+
+    public void setDailyMessage(String dailyMessage) { this.dailyMessage = dailyMessage; }
 
     public Boolean getActive() { return active; }
 

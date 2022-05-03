@@ -56,4 +56,22 @@ public final class ProjectHelper {
         };
         return false;
     }
+
+    /**
+     * Получения данных пользователя
+     *
+     * @param user Данные аунтификации пользователя
+     * @param project Проект
+     * @param members Участник
+     * @return ProjectUser Данные пользователя
+     */
+    public static ProjectUser getMember(User user, List<ProjectUser> members) {
+        for (ProjectUser mem : members){
+            if (mem.getUser().getId().equals(user.getId())){
+                return mem;
+            }
+        }
+
+        return null;
+    }
 }

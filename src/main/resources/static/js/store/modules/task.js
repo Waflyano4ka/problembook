@@ -4,7 +4,7 @@ import router from '../../router/index'
 const resourceApi = '/api/task'
 
 const state = {
-    tasks: []
+    tasks: [],
 }
 
 const getters = {
@@ -12,6 +12,19 @@ const getters = {
 }
 
 const actions = {
+    async CHANGE_DAILY_MESSAGE({ commit }, message) {
+        try {
+            const idProject = router.currentRoute.params.id
+            const response = await axios.put(resourceApi + '/' + idProject + '/daily', {data: message})
+            commit('EDIT_PROJECT_TO_STATE', response.data)
+        } catch (err) {
+            console.error(err)
+            await this.dispatch('SET_SNACKBAR', {
+                text: err.response.data,
+                color: "error"
+            })
+        }
+    },
     async GET_TASKS_FORM_DB({ commit }, id) {
         try {
             const response = await axios.get(resourceApi + '/' + id)
