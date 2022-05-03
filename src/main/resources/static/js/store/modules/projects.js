@@ -41,8 +41,11 @@ const actions = {
                 text: "Был создан новый проект",
                 color: "success"
             })
-        } catch (error) {
-            console.error(error)
+        } catch (err) {
+            await this.dispatch('SET_SNACKBAR', {
+                text: err.response.data,
+                color: "error"
+            })
         }
     },
     async EDIT_PROJECT_IN_DB({ commit }, project) {

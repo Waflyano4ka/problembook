@@ -29,19 +29,22 @@
           ></v-textarea>
           <v-layout align-center justify-space-around row v-if="daily">
             <v-col cols="6" class="pb-0">
-                <v-btn block color="warning" @click="Cancel">
+                <v-btn block rounded color="warning" @click="Cancel">
                   Отмена
                 </v-btn>
             </v-col>
             <v-col cols="6" class="pb-0">
-              <v-btn block color="success" @click="Apply">
+              <v-btn block rounded color="success" @click="Apply">
                 Сохранить
               </v-btn>
             </v-col>
           </v-layout>
         </v-card-text>
         <v-card-actions v-if="CURRENT_ROLE === 'CREATOR' || CURRENT_ROLE === 'REDACTOR'">
-          <task-create/>
+          <v-layout align-center justify-space-around column>
+            <task-create/>
+            <group-list/>
+          </v-layout>
         </v-card-actions>
       </v-card>
     </v-col>
@@ -51,12 +54,13 @@
 <script>
 import TaskCreate from './TaskCreate.vue'
 import TaskRow from './TaskRow.vue'
+import GroupList from './../groups/GroupList.vue'
 import {mapActions, mapState, mapGetters} from "vuex";
 import router from "../../router";
 
 export default {
   components: {
-    TaskCreate, TaskRow
+    TaskCreate, TaskRow, GroupList
   },
   data: function () {
     return {

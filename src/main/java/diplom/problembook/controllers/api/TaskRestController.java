@@ -50,22 +50,27 @@ public class TaskRestController {
                                       @RequestBody String request,
                                       @AuthenticationPrincipal User user) {
         ProjectUser member = getMember(user, projectUserRepository.findByProject(project));
-        if(member != null){
-            Role role = member.getRole();
-            if (role.getName().equals("CREATOR") || role.getName().equals("REDACTOR")){
-                project.setDailyMessage(new JSONObject(request).getString("data"));
+        if (project.getActive()) {
+            if(member != null){
+                Role role = member.getRole();
+                if (role.getName().equals("CREATOR") || role.getName().equals("REDACTOR")){
+                    project.setDailyMessage(new JSONObject(request).getString("data"));
 
+                    return ResponseEntity
+                            .status(HttpStatus.OK)
+                            .body(projectRepository.save(project));
+                }
                 return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(projectRepository.save(project));
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("У вас недостаточно прав для добавления задания");
             }
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("У вас недостаточно прав для добавления задания");
+                    .body("У вас нет доступа к этому проекту");
         }
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("У вас нет доступа к этому проекту");
+                .body("Проект находится в архиве");
     }
 
     @GetMapping("/{id}")

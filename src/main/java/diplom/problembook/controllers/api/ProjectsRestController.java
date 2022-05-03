@@ -43,6 +43,7 @@ public class ProjectsRestController {
     @GetMapping
     public Iterable<ProjectUser> get(@AuthenticationPrincipal User user){
         return projectUserRepository.findByUser(user).stream().filter(ProjectUser::getAccess).filter(ProjectUser::ProjectUserNotDeleted).toList();
+        //TODO Реализовать поиск на фронте
     }
 
     /**
@@ -163,7 +164,7 @@ public class ProjectsRestController {
      * @return ProjectUser Возвращает значение участника
      */
     @PostMapping
-    public ProjectUser create(@RequestBody Project project, @AuthenticationPrincipal User user) {
+    public ResponseEntity create(@RequestBody Project project, @AuthenticationPrincipal User user) {
         project.setUser(user);
         projectRepository.save(project);
 
@@ -175,7 +176,15 @@ public class ProjectsRestController {
                 true
         );
 
-        return projectUserRepository.save(projectUser);
+        if (project.getName().isBlank()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Название проекта пустое или состоит из пробелов");
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(projectUserRepository.save(projectUser));
     }
 
     /**
@@ -193,6 +202,13 @@ public class ProjectsRestController {
         JSONObject data = new JSONObject(request);
         if (project.getUser().getId().equals(user.getId())) {
             project.setName(data.getString("name"));
+
+            if (data.getString("name").isBlank()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("Название проекта пустое или состоит из пробелов");
+            }
+
             project.setColor(data.getString("color"));
             project.setKeyToConnect(data.getString("keyToConnect"));
             return ResponseEntity

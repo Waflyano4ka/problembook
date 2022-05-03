@@ -5,12 +5,13 @@ import projects from './modules/projects';
 import project from './modules/project';
 import role from './modules/role';
 import task from './modules/task';
+import group from './modules/group';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     modules: {
-        projects, project, role, task
+        projects, project, role, task, group
     },
     state: {
         profile: frontendData.profile,

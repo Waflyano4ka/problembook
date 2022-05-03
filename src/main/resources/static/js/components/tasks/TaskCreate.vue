@@ -1,15 +1,15 @@
 <template>
   <v-dialog persistent max-width="820px" v-model="dialog">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn block rounded color="secondary" v-on="on" v-bind="attrs">
+      <v-btn block rounded color="accent" v-on="on" v-bind="attrs" class="ma-1">
         Добавить
         <v-icon right dark>
           mdi-calendar-check
         </v-icon>
       </v-btn>
     </template>
-    <v-card ref="form">
-      <v-app-bar color="primary" elevation="0">
+    <v-card ref="form" class="">
+      <v-app-bar color="accent" elevation="0">
         <v-toolbar-title class="text-h6 pl-0">
           Добавление задания
         </v-toolbar-title>
