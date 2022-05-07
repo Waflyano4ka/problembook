@@ -1,6 +1,7 @@
 package diplom.problembook.models;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 public class TaskGroup {
@@ -29,7 +30,11 @@ public class TaskGroup {
 
     public void setName(String name) { this.name = name; }
 
-    public Boolean getInvisible() { return invisible; }
+    public Boolean getInvisible() {
+        if (invisible != null)
+            return invisible;
+        return false;
+    }
 
     public void setInvisible(Boolean invisible) { this.invisible = invisible; }
 
@@ -37,7 +42,9 @@ public class TaskGroup {
 
     public void setProject(Project project) { this.project = project; }
 
-
+    public Boolean checkName(String name) {
+        return this.name.equals(name);
+    }
 
     public Boolean canSee() {
         if (invisible != null)

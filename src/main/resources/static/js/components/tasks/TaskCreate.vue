@@ -38,10 +38,30 @@
                       no-resize
                       v-model="description"
           />
-          <v-checkbox
-              v-model="timeVisible"
-              label="Срок сдачи"
-          ></v-checkbox>
+          <v-row>
+            <v-col>
+              <v-checkbox
+                  color="accent"
+                  v-model="timeVisible"
+                  label="Срок сдачи"
+              ></v-checkbox>
+            </v-col>
+            <v-col>
+              <v-checkbox
+                  color="accent"
+                  v-model="groupVisible"
+                  label="Без группы"
+              ></v-checkbox>
+            </v-col>
+          </v-row>
+          <v-select v-if="!groupVisible"
+                      v-model="group"
+                      color="accent"
+                      :items="GROUPS"
+                      :item-text="(obj) => (obj)['name']"
+                      :return-object="true"
+                      label="Группа"
+          />
           <task-members @membersChange="membersChange"/>
           <task-date-time-picker v-if="timeVisible" @dateChange="dateChange"/>
         </v-container>
@@ -61,7 +81,7 @@
 <script>
 import TaskDateTimePicker from './TaskDateTimePicker.vue'
 import TaskMembers from "./TaskMembers.vue";
-import {mapActions, mapState} from "vuex";
+import {mapActions, mapGetters, mapState} from "vuex";
 
 export default {
   components: {
@@ -71,6 +91,8 @@ export default {
     return {
       dialog: false,
       timeVisible: false,
+      groupVisible: true,
+      group: null,
       members: [],
       datetime: null,
       name: null,
@@ -79,7 +101,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['ADD_TASK_TO_DB']),
+    ...mapActions(['ADD_TASK_TO_DB', 'GET_GROUPS_FROM_DB']),
     submit() {
       this.formHasErrors = false
 
@@ -101,6 +123,10 @@ export default {
           this.datetime = `${day}/${month}/${year} 23:59`
         }
 
+        if (this.groupVisible) {
+          this.group = null
+        }
+
         this.ADD_TASK_TO_DB(this.form)
 
         this.dialog = false
@@ -113,6 +139,9 @@ export default {
       this.datetime = val
     }
   },
+  mounted() {
+    this.GET_GROUPS_FROM_DB()
+  },
   computed: {
     form () {
       return {
@@ -121,8 +150,11 @@ export default {
         members: this.members,
         enableTime: this.timeVisible,
         datetime: this.datetime,
+        groupEnable: !this.groupVisible,
+        group: this.group,
       }
     },
+    ...mapGetters(['GROUPS'])
   },
 }
 </script>

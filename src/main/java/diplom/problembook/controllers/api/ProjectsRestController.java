@@ -201,7 +201,6 @@ public class ProjectsRestController {
                                         @AuthenticationPrincipal User user) {
         JSONObject data = new JSONObject(request);
         if (project.getUser().getId().equals(user.getId())) {
-            project.setName(data.getString("name"));
 
             if (data.getString("name").isBlank()) {
                 return ResponseEntity
@@ -209,6 +208,7 @@ public class ProjectsRestController {
                         .body("Название проекта пустое или состоит из пробелов");
             }
 
+            project.setName(data.getString("name"));
             project.setColor(data.getString("color"));
             project.setKeyToConnect(data.getString("keyToConnect"));
             return ResponseEntity

@@ -35,6 +35,8 @@ const actions = {
                 text: `Группа "${response.data.name}" была удалена`,
                 color: "info"
             })
+
+            router.go(0);
         } catch (err) {
             await this.dispatch('SET_SNACKBAR', {
                 text: err.response.data,

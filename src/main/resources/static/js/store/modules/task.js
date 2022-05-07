@@ -8,7 +8,7 @@ const state = {
 }
 
 const getters = {
-    TASKS: state => state.tasks,
+    GROUPTASKS: state => state.tasks,
 }
 
 const actions = {
@@ -25,9 +25,10 @@ const actions = {
             })
         }
     },
-    async GET_TASKS_FORM_DB({ commit }, id) {
+    async GET_TASKS_FORM_DB({ commit }) {
         try {
-            const response = await axios.get(resourceApi + '/' + id)
+            const idProject = router.currentRoute.params.id
+            const response = await axios.get(resourceApi + '/' + idProject)
             commit('SET_TASKS_TO_STATE', response.data)
         } catch (err) {
             await this.dispatch('SET_SNACKBAR', {
@@ -40,7 +41,6 @@ const actions = {
         try {
             const idProject = router.currentRoute.params.id
             let stringJSON = JSON.parse(JSON.stringify(task))
-            console.log(stringJSON)
             const response = await axios.put(resourceApi + '/' + idProject, stringJSON)
             commit('ADD_TASK_TO_STATE', response.data)
             await this.dispatch('SET_SNACKBAR', {
@@ -57,7 +57,17 @@ const actions = {
 }
 
 const mutations = {
-    ADD_TASK_TO_STATE: (state, task) => state.tasks.push(task),
+    ADD_TASK_TO_STATE (state, task) {
+        let index = state.tasks.findIndex(item => item.name === task.taskGroup.name)
+        if (index !== -1)
+            state.tasks[index].tasks.push(task)
+        else {
+            let content = { name: task.taskGroup.name, tasks: [] }
+            content.tasks.push(task)
+
+            state.tasks.push(content)
+        }
+    },
     SET_TASKS_TO_STATE: (state, tasks) => state.tasks = tasks,
 }
 

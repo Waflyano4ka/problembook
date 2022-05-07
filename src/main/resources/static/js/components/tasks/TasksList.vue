@@ -2,9 +2,9 @@
   <v-row align="start" class="px-4 pb-0 pt-4">
     <v-col cols="8">
       <v-list subheader two-line>
-        <task-row v-for="task in TASKS"
-                  :key="task.id"
-                  :task="task"
+        <task-group v-for="group in GROUPTASKS"
+                  :key="group.id"
+                  :group="group"
         />
       </v-list>
     </v-col>
@@ -53,14 +53,14 @@
 
 <script>
 import TaskCreate from './TaskCreate.vue'
-import TaskRow from './TaskRow.vue'
+import TaskGroup from './TaskGroup.vue'
 import GroupList from './../groups/GroupList.vue'
 import {mapActions, mapState, mapGetters} from "vuex";
 import router from "../../router";
 
 export default {
   components: {
-    TaskCreate, TaskRow, GroupList
+    TaskCreate, TaskGroup, GroupList
   },
   data: function () {
     return {
@@ -72,8 +72,10 @@ export default {
     ...mapActions(['GET_MEMBERS_FORM_DB', 'GET_TASKS_FORM_DB', 'CHANGE_DAILY_MESSAGE']),
     changeDaily() {
       if (this.CURRENT_ROLE === 'CREATOR' || this.CURRENT_ROLE === 'REDACTOR')
+      {
         this.dailyTextChanged = this.OBJECT.dailyMessage
         this.daily = !this.daily
+      }
     },
     Cancel() {
       this.changeDaily()
@@ -86,11 +88,11 @@ export default {
   },
   mounted() {
     this.GET_MEMBERS_FORM_DB(this.$route.params.id)
-    this.GET_TASKS_FORM_DB(this.$route.params.id)
+    this.GET_TASKS_FORM_DB()
   },
   computed: {
     ...mapState(['profile']),
-    ...mapGetters(['CURRENT_ROLE', 'TASKS', 'OBJECT'])
+    ...mapGetters(['CURRENT_ROLE', 'GROUPTASKS', 'OBJECT'])
   }
 }
 </script>

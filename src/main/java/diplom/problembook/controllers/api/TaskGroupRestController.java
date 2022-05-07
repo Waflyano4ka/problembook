@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static diplom.problembook.helpers.ProjectHelper.getMember;
 
 @RestController
@@ -16,15 +18,18 @@ public class TaskGroupRestController {
     private final ProjectUserRepository projectUserRepository;
     private final ProjectRepository projectRepository;
     private final TaskGroupRepository taskGroupRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
     public TaskGroupRestController(
             ProjectRepository projectRepository,
             ProjectUserRepository projectUserRepository,
-            TaskGroupRepository taskGroupRepository) {
+            TaskGroupRepository taskGroupRepository,
+            TaskRepository taskRepository) {
         this.projectUserRepository = projectUserRepository;
         this.projectRepository = projectRepository;
         this.taskGroupRepository = taskGroupRepository;
+        this.taskRepository = taskRepository;
     }
 
     /**
@@ -69,7 +74,27 @@ public class TaskGroupRestController {
                 Role role = member.getRole();
                 if (role.getName().equals("CREATOR") || role.getName().equals("REDACTOR")){
 
-                    //TODO Тут все перелопать нужно, пока все на соплях
+                    List<Task> tasks = taskRepository.findByTaskGroup(group);
+                    if (tasks.size() > 0) {
+                        List<TaskGroup> res = taskGroupRepository.findByProject(project).stream().filter(TaskGroup::getInvisible).toList();
+
+                        TaskGroup invisibleGroup;
+                        if (res.size() > 0) {
+                            invisibleGroup = res.get(0);
+                        }
+                        else {
+                            invisibleGroup = new TaskGroup();
+                            invisibleGroup.setProject(project);
+                            invisibleGroup.setName("DEFAULT");
+                            invisibleGroup.setInvisible(true);
+
+                            taskGroupRepository.save(invisibleGroup);
+                        }
+
+                        for (Task t : tasks) {
+                            t.setTaskGroup(invisibleGroup);
+                        }
+                    }
 
                     if (!group.canSee()) {
                         return ResponseEntity
@@ -113,7 +138,17 @@ public class TaskGroupRestController {
                 Role role = member.getRole();
                 if (role.getName().equals("CREATOR") || role.getName().equals("REDACTOR")){
                     group.setProject(project);
-
+                    if (group.getName().isBlank()) {
+                        return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body("Название группы пустое или состоит из пробелов");
+                    }
+                    List<TaskGroup> res = taskGroupRepository.findByProject(project).stream().filter(g -> g.getName().equals(group.getName())).toList();
+                    if (res.size() > 0) {
+                        return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body("Группа с таким именем уже существует");
+                    }
                     return ResponseEntity
                             .status(HttpStatus.OK)
                             .body(taskGroupRepository.save(group));
@@ -152,6 +187,19 @@ public class TaskGroupRestController {
                         return ResponseEntity
                                 .status(HttpStatus.BAD_REQUEST)
                                 .body("Невозможно сделать эту группу невидимой");
+                    }
+                    if (group.getName().isBlank()) {
+                        return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body("Название группы пустое или состоит из пробелов");
+                    }
+                    List<TaskGroup> res = taskGroupRepository.findByProject(project).stream().filter(g -> g.getName().equals(group.getName())).toList();
+                    if (res.size() > 0) {
+                        if (!res.get(0).getId().equals(group.getId())){
+                            return ResponseEntity
+                                    .status(HttpStatus.BAD_REQUEST)
+                                    .body("Группа с таким именем уже существует");
+                        }
                     }
                     return ResponseEntity
                             .status(HttpStatus.OK)

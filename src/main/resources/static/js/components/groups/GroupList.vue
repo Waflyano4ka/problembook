@@ -145,8 +145,10 @@ export default {
       })
 
       if (!this.formHasErrorsRe){
-        this.currentGroup.name = this.reform.rename
-        this.EDIT_GROUP_TO_DB(this.currentGroup)
+        let group = Object.assign({}, this.currentGroup);
+        group.name = this.reform.rename
+
+        this.EDIT_GROUP_TO_DB(group)
       }
     },
   },

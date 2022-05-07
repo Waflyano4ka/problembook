@@ -1,5 +1,7 @@
 <template>
   <v-select
+      color="accent"
+      item-color="accent"
       v-model="select"
       :items="READERS"
       item-text="user.name"
