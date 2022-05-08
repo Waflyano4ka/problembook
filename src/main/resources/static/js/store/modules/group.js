@@ -18,10 +18,11 @@ const actions = {
             const response = await axios.get(resourceApi + '/' + idProject)
             commit('SET_GROUPS_TO_STATE', response.data)
         } catch (err) {
-            await this.dispatch('SET_SNACKBAR', {
-                text: err.response.data,
-                color: "error"
-            })
+            if (err.response.data !== "У вас недостаточно прав для получения списка групп")
+                await this.dispatch('SET_SNACKBAR', {
+                    text: err.response.data,
+                    color: "error"
+                })
         }
     },
     async DELETE_GROUPS_FROM_DB({ commit }, group){

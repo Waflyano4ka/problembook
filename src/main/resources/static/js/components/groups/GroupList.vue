@@ -163,7 +163,7 @@ export default {
         rename: this.rename,
       }
     },
-    ...mapGetters(['GROUPS'])
+    ...mapGetters(['GROUPS', 'OBJECT'])
   },
   watch: {
     name () {
@@ -174,7 +174,8 @@ export default {
     },
   },
   mounted() {
-    this.GET_GROUPS_FROM_DB()
+    if (this.OBJECT.active)
+      this.GET_GROUPS_FROM_DB()
   }
 }
 </script>

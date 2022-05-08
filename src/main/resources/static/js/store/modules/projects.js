@@ -4,7 +4,7 @@ import router from '../../router/index'
 const resourceApi = '/api/projects'
 
 const state = {
-    projects: []
+    projects: [],
 }
 
 const getters = {

@@ -43,29 +43,32 @@ public class TaskGroupRestController {
     public ResponseEntity getAllGroups(@PathVariable(value = "id") Project project,
                                    @AuthenticationPrincipal User user) {
         ProjectUser member = getMember(user, projectUserRepository.findByProject(project));
-        if (project.getActive()) {
-            if(member != null){
-                Role role = member.getRole();
-                if (role.getName().equals("CREATOR") || role.getName().equals("REDACTOR")){
-                    return ResponseEntity
-                            .status(HttpStatus.OK)
-                            .body(taskGroupRepository.findByProject(project).stream().filter(TaskGroup::canSee));
-                }
+        if(member != null){
+            Role role = member.getRole();
+            if (role.getName().equals("CREATOR") || role.getName().equals("REDACTOR")){
                 return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body("У вас недостаточно прав для добавления новой группы");
+                        .status(HttpStatus.OK)
+                        .body(taskGroupRepository.findByProject(project).stream().filter(TaskGroup::canSee));
             }
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("У вас нет доступа к этому проекту");
+                    .body("У вас недостаточно прав для получения списка групп");
         }
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Проект находится в архиве");
+                .body("У вас нет доступа к этому проекту");
     }
 
+    /**
+     * Удаление группы. Если в группе были задачи, тогда он перекидывает их в другую группу, а саму группу удаляет
+     *
+     * @param project Проект
+     * @param group Группа
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity Данные удаленной группы
+     */
     @GetMapping("/{ProjectId}/delete/{GroupId}")
-    public ResponseEntity getAllGroups(@PathVariable(value = "ProjectId") Project project,
+    public ResponseEntity deleteGroups(@PathVariable(value = "ProjectId") Project project,
                                        @PathVariable(value = "GroupId") TaskGroup group,
                                        @AuthenticationPrincipal User user) {
         ProjectUser member = getMember(user, projectUserRepository.findByProject(project));

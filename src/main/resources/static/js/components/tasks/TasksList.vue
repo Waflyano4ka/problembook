@@ -1,6 +1,6 @@
 <template>
   <v-row align="start" class="px-4 pb-0 pt-4">
-    <v-col cols="8">
+    <v-col>
       <v-list subheader two-line>
         <task-group v-for="group in GROUPTASKS"
                   :key="group.id"
@@ -8,7 +8,7 @@
         />
       </v-list>
     </v-col>
-    <v-col cols="4">
+    <v-col v-if="OBJECT.active" cols="4">
       <v-card
           class="mb-1"
           elevation="3"

@@ -17,6 +17,7 @@ public final class ProjectHelper {
 
     /**
      * Различные проверки пользователя перед удалением или блокировкой
+     *
      * @param project Проект
      * @param user Данные аунтификации пользователя
      * @param member Участник
@@ -61,7 +62,6 @@ public final class ProjectHelper {
      * Получения данных пользователя
      *
      * @param user Данные аунтификации пользователя
-     * @param project Проект
      * @param members Участник
      * @return ProjectUser Данные пользователя
      */

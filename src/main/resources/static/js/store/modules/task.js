@@ -4,48 +4,41 @@ import router from '../../router/index'
 const resourceApi = '/api/task'
 
 const state = {
-    tasks: [],
+    task: null,
 }
 
 const getters = {
-    GROUPTASKS: state => state.tasks,
+    TASK: state => state.task,
 }
 
 const actions = {
-    async CHANGE_DAILY_MESSAGE({ commit }, message) {
+    async GET_TASK_FORM_DB({ commit }) {
         try {
-            const idProject = router.currentRoute.params.id
-            const response = await axios.put(resourceApi + '/' + idProject + '/daily', {data: message})
-            commit('EDIT_PROJECT_TO_STATE', response.data)
+            const idTask = router.currentRoute.params.id
+            const response = await axios.get(resourceApi + '/' + idTask)
+            commit('SET_TASK_TO_STATE', response.data)
         } catch (err) {
-            console.error(err)
+            await router.replace({ name: 'allProjectsPage'})
+
             await this.dispatch('SET_SNACKBAR', {
                 text: err.response.data,
                 color: "error"
             })
         }
     },
-    async GET_TASKS_FORM_DB({ commit }) {
+    async DELETE_TASK_FORM_DB({ commit }) {
         try {
-            const idProject = router.currentRoute.params.id
-            const response = await axios.get(resourceApi + '/' + idProject)
-            commit('SET_TASKS_TO_STATE', response.data)
-        } catch (err) {
+            const idTask = router.currentRoute.params.id
+            const response = await axios.get(resourceApi + '/' + idTask + '/delete')
+            const data = response.data
+
+            const idProject = data.project.id
+            await router.push({ name: 'projectPage', params: { id: idProject } })
+            commit('DELETE_TASK_FROM_STATE', data)
+
             await this.dispatch('SET_SNACKBAR', {
-                text: err.response.data,
-                color: "error"
-            })
-        }
-    },
-    async ADD_TASK_TO_DB({ commit }, task) {
-        try {
-            const idProject = router.currentRoute.params.id
-            let stringJSON = JSON.parse(JSON.stringify(task))
-            const response = await axios.put(resourceApi + '/' + idProject, stringJSON)
-            commit('ADD_TASK_TO_STATE', response.data)
-            await this.dispatch('SET_SNACKBAR', {
-                text: "Задача опубликована",
-                color: "success"
+                text: `Задача "${data.name}" удалена`,
+                color: "info"
             })
         } catch (err) {
             await this.dispatch('SET_SNACKBAR', {
@@ -57,18 +50,7 @@ const actions = {
 }
 
 const mutations = {
-    ADD_TASK_TO_STATE (state, task) {
-        let index = state.tasks.findIndex(item => item.name === task.taskGroup.name)
-        if (index !== -1)
-            state.tasks[index].tasks.push(task)
-        else {
-            let content = { name: task.taskGroup.name, tasks: [] }
-            content.tasks.push(task)
-
-            state.tasks.push(content)
-        }
-    },
-    SET_TASKS_TO_STATE: (state, tasks) => state.tasks = tasks,
+    SET_TASK_TO_STATE: (state, task) => state.task = task,
 }
 
 export default {

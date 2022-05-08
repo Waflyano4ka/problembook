@@ -2,21 +2,18 @@ package diplom.problembook.controllers.api;
 
 import diplom.problembook.models.*;
 import diplom.problembook.repositories.*;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-
-import static diplom.problembook.helpers.ProjectHelper.getMember;
 
 @RestController
 @RequestMapping("api/task")
@@ -41,151 +38,66 @@ public class TaskRestController {
         this.taskGroupRepository = taskGroupRepository;
     }
 
-    /**
-     * Изменение ежедневной повестки
-     *
-     * @param project Проект
-     * @param request Текст пвестки
-     * @param user Данные аунтификации пользователя
-     * @return ResponseEntity данные проекта
-     */
-    @PutMapping("/{id}/daily")
-    public ResponseEntity changeDailyMessage(@PathVariable(value = "id") Project project,
-                                      @RequestBody String request,
-                                      @AuthenticationPrincipal User user) {
-        ProjectUser member = getMember(user, projectUserRepository.findByProject(project));
-        if (project.getActive()) {
-            if(member != null){
-                Role role = member.getRole();
-                if (role.getName().equals("CREATOR") || role.getName().equals("REDACTOR")){
-                    project.setDailyMessage(new JSONObject(request).getString("data"));
-
-                    return ResponseEntity
-                            .status(HttpStatus.OK)
-                            .body(projectRepository.save(project));
-                }
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body("У вас недостаточно прав для добавления задания");
-            }
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("У вас нет доступа к этому проекту");
-        }
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Проект находится в архиве");
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity getTasks(@PathVariable(value = "id") Project project,
+    public ResponseEntity getTask(@PathVariable(value = "id") Task task,
                                    @AuthenticationPrincipal User user) {
-        for (ProjectUser mem : projectUserRepository.findByProject(project)){
-            if (mem.getUser().getId().equals(user.getId())){
-                List<TaskGroup> groups = taskGroupRepository.findByProject(project);
-                List<HashMap<Object, Object>> data = new ArrayList<HashMap<Object, Object>>();
-                for (TaskGroup group : groups) {
-                    List<Task> tasks;
-                    if (mem.getRole().getName().equals("READER")) {
-                        tasks = taskRepository.findByTaskGroup(group).stream().filter(t -> t.checkUser(user, taskUserRepository.findByTask(t))).toList();
+        if (task.getArchive()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Задачи не существует");
+        }
+        List<ProjectUser> members = projectUserRepository.findByProject(task.getProject()).stream().filter(m -> m.getUser().getId().equals(user.getId())).toList();
+        if (members.size() > 0){
+            ProjectUser mem = members.get(0);
+            if (mem.getRole().getName().equals("READER")) {
+                List<TaskUser> taskUsers = taskUserRepository.findByTask(task);
+                for (TaskUser tu : taskUsers) {
+                    if (tu.getReader().getUser().getId().equals(user.getId())){
+                        return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(task);
                     }
-                    else {
-                        tasks = taskRepository.findByTaskGroup(group);
-                    }
-
-                    HashMap<Object, Object> content = new HashMap<>();
-                    content.put("name", group.getName());
-                    content.put("tasks", tasks);
-                    data.add(content);
                 }
+            }
+            else {
                 return ResponseEntity
                         .status(HttpStatus.OK)
-                        .body(data);
+                        .body(task);
             }
         }
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("У вас нет доступа к этому проекту");
+                .body("У вас нет доступа к этой задаче");
     }
 
     /**
-     * Добавление задания
+     * Удаление задачи
      *
-     * @param project проект
-     * @param request Данные задания
+     * @param task задача
      * @param user Данные аунтификации пользователя
-     * @return ResponseEntity Задание
+     * @return ResponseEntity Задача, которую удалили
      */
-    @PutMapping("/{id}")
-    public ResponseEntity taskAdd(@PathVariable(value = "id") Project project,
-                                  @RequestBody String request,
+    @GetMapping("/{id}/delete")
+    public ResponseEntity deleteTask(@PathVariable(value = "id") Task task,
                                   @AuthenticationPrincipal User user) {
-        JSONObject data = new JSONObject(request);
-        ProjectUser member = getMember(user, projectUserRepository.findByProject(project));
-        if (data.getString("name").isBlank()) {
+        if (!task.getProject().getActive()){
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("Название задания не может быть пустым");
+                    .body("Проект находится в архиве");
         }
-        if (project.getActive()) {
-            if (member != null) {
-                Role role = member.getRole();
+        List<ProjectUser> members = projectUserRepository.findByProject(task.getProject()).stream().filter(m -> m.getUser().getId().equals(user.getId())).toList();
+        if (members.size() > 0){
+            ProjectUser mem = members.get(0);
+            if (!mem.getRole().getName().equals("READER")) {
+                task.setArchive(true);
 
-                if (role.getName().equals("CREATOR") || role.getName().equals("REDACTOR")) {
-                    Task task = new Task();
-                    task.setArchive(false);
-                    task.setAuthor(user);
-                    task.setProject(project);
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                    task.setDatetime(LocalDateTime.parse(data.getString("datetime"), formatter));
-                    task.setCreateDatetime(LocalDateTime.now());
-                    task.setName(data.getString("name"));
-
-                    task.setDescription(data.getString("description"));
-                    task.setEnableTime(data.getBoolean("enableTime"));
-
-                    if (data.getBoolean("groupEnable")) {
-                        JSONObject group =  data.getJSONObject("group");
-                        task.setTaskGroup(taskGroupRepository.findById(group.getLong("id")).orElseThrow());
-                    }
-                    else {
-                        TaskGroup invisibleGroup;
-
-                        List<TaskGroup> res = taskGroupRepository.findByProject(project).stream().filter(TaskGroup::getInvisible).toList();
-                        if (res.size() > 0) {
-                            invisibleGroup = res.get(0);
-                            task.setTaskGroup(invisibleGroup);
-                        }
-                        else {
-                            invisibleGroup = new TaskGroup();
-                            invisibleGroup.setProject(project);
-                            invisibleGroup.setName("DEFAULT");
-                            invisibleGroup.setInvisible(true);
-
-                            task.setTaskGroup(taskGroupRepository.save(invisibleGroup));
-                        }
-                    }
-
-                    taskRepository.save(task);
-
-                    for (Object mem : data.getJSONArray("members")) {
-                        taskUserRepository.save(new TaskUser(false, projectUserRepository.findById(Long.parseLong(mem.toString())).orElseThrow(), task));
-                    }
-
-                    return ResponseEntity
-                            .status(HttpStatus.OK)
-                            .body(task);
-                }
                 return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body("У вас недостаточно прав для добавления задания");
+                        .status(HttpStatus.OK)
+                        .body(taskRepository.save(task));
             }
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("У вас нет доступа к этому проекту");
         }
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Проект находится в архиве");
+                .body("У вас нет доступа к этой задаче");
     }
 }

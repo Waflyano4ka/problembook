@@ -8,7 +8,7 @@ const state = {
         project: {},
         members: [],
     },
-    search: " ",
+    search: "",
     currentHash: "#tasks",
     currentMemberId: null
 }

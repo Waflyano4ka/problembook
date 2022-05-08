@@ -5,6 +5,7 @@ import AllProjectsPage from '../pages/tabs/project/AllProjectsPage.vue'
 import ProjectPage from '../pages/tabs/project/ProjectPage.vue'
 import ArchivedProjectsPage from "../pages/tabs/archive/ArchivedProjectsPage.vue"
 import ArchivePage from "../pages/tabs/archive/ArchivePage.vue"
+import TaskPage from "../pages/tabs/task/TaskPage.vue"
 
 export default new VueRouter({
     mode: 'history',
@@ -14,6 +15,7 @@ export default new VueRouter({
         { path: '/projects/:id', name: 'projectPage', component: ProjectPage},
         { path: '/archive', name: 'archivedProjectsPage', component: ArchivedProjectsPage},
         { path: '/archive/:id', name: 'archivePage', component: ArchivePage},
+        { path: '/task/:id', name: 'taskPage', component: TaskPage},
         { path: "*", component: MainPage}
     ]
 })
