@@ -15,7 +15,7 @@
           <v-col elevation="0" cols="6">
             <v-toolbar-title v-text="task.name"/>
             <v-card-text justify="start" class="pa-0">
-              <div class="clip"> {{ `Создано: ${task.createDatetime}` }} </div>
+              <div class="clip"> {{ `${!!task.editDatetime ? "Изменено: " + task.editDatetime : "Создано: " + task.createDatetime}` }} </div>
             </v-card-text>
           </v-col>
           <v-spacer/>

@@ -4,11 +4,13 @@ import router from '../../router/index'
 const resourceApi = '/api/task'
 
 const state = {
+    currentTaskRole: null,
     task: null,
 }
 
 const getters = {
     TASK: state => state.task,
+    CURRENT_TASK_ROLE: state => state.currentTaskRole
 }
 
 const actions = {
@@ -16,10 +18,28 @@ const actions = {
         try {
             const idTask = router.currentRoute.params.id
             const response = await axios.get(resourceApi + '/' + idTask)
+
             commit('SET_TASK_TO_STATE', response.data)
         } catch (err) {
             await router.replace({ name: 'allProjectsPage'})
 
+            await this.dispatch('SET_SNACKBAR', {
+                text: err.response.data,
+                color: "error"
+            })
+        }
+    },
+    async EDIT_TASK_TO_DB({ commit }, editTask) {
+        try {
+            const idTask = router.currentRoute.params.id
+            let stringJSON = JSON.parse(JSON.stringify(editTask))
+            const response = await axios.put(resourceApi + '/' + idTask + '/edit', stringJSON)
+            commit('EDIT_TASK_TO_STATE', response.data)
+            await this.dispatch('SET_SNACKBAR', {
+                text: "Задача изменена",
+                color: "success"
+            })
+        } catch (err) {
             await this.dispatch('SET_SNACKBAR', {
                 text: err.response.data,
                 color: "error"
@@ -50,7 +70,11 @@ const actions = {
 }
 
 const mutations = {
-    SET_TASK_TO_STATE: (state, task) => state.task = task,
+    SET_TASK_TO_STATE (state, data) {
+        state.task = data.task
+        state.currentTaskRole = data.role
+    },
+    EDIT_TASK_TO_STATE: (state, task) => state.task = task,
 }
 
 export default {

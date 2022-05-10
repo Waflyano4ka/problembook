@@ -16,10 +16,8 @@
               </v-sheet>
             </v-col>
             <v-col cols="3" class="px-0 pt-0" align="end">
-              <v-btn fab color="white" elevation="0" small class="mx-2">
-                <v-icon>mdi-credit-card-edit-outline</v-icon>
-              </v-btn>
-              <delete-task-button v-if="TASK.project.active" :task="TASK" :deleteTask="deleteTask"/>
+              <edit-task-button v-if="TASK.project.active && CURRENT_TASK_ROLE.name !== 'READER'" :task="Object.assign({}, TASK)"/>
+              <delete-task-button v-if="TASK.project.active && CURRENT_TASK_ROLE.name !== 'READER'" :task="TASK" :deleteTask="deleteTask"/>
             </v-col>
           </v-row>
         </template>
@@ -44,7 +42,7 @@
               <p class="ml-3 mb-0 mt-2" style="line-height: 0.9em;">
                 {{ TASK.author.name }}
                 <br/>
-                <span class="caption"> {{ TASK.createDatetime }} </span>
+                <span class="caption"> {{ `${TASK.createDatetime} ${!!TASK.editDatetime ? "(Изменено: " + TASK.editDatetime + ")" : ""}` }} </span>
               </p>
             </v-card-title>
             <v-card-text>
@@ -89,15 +87,16 @@
 
 <script>
 import DeleteTaskButton from '../../../components/task/DeleteTaskButton.vue'
+import EditTaskButton from '../../../components/task/EditTaskButton.vue'
 
 import {mapActions, mapGetters} from "vuex";
 
 export default {
   components: {
-    DeleteTaskButton,
+    DeleteTaskButton, EditTaskButton
   },
   computed: {
-    ...mapGetters(['TASK']),
+    ...mapGetters(['TASK', 'CURRENT_TASK_ROLE']),
   },
   methods: {
     ...mapActions(['GET_TASK_FORM_DB', 'DELETE_TASK_FORM_DB']),

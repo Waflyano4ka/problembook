@@ -12,6 +12,18 @@ const getters = {
 }
 
 const actions = {
+    async GET_GROUPS_FROM_DB_EDIT_TASK({ commit }, idProject){
+        try {
+            const response = await axios.get(resourceApi + '/' + idProject)
+            commit('SET_GROUPS_TO_STATE', response.data)
+        } catch (err) {
+            if (err.response.data !== "У вас недостаточно прав для получения списка групп")
+                await this.dispatch('SET_SNACKBAR', {
+                    text: err.response.data,
+                    color: "error"
+                })
+        }
+    },
     async GET_GROUPS_FROM_DB({ commit }){
         try {
             const idProject = router.currentRoute.params.id

@@ -2,15 +2,14 @@ package diplom.problembook.controllers.api;
 
 import diplom.problembook.models.*;
 import diplom.problembook.repositories.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,20 +48,30 @@ public class TaskRestController {
         List<ProjectUser> members = projectUserRepository.findByProject(task.getProject()).stream().filter(m -> m.getUser().getId().equals(user.getId())).toList();
         if (members.size() > 0){
             ProjectUser mem = members.get(0);
+            HashMap<Object, Object> content = new HashMap<>();
             if (mem.getRole().getName().equals("READER")) {
                 List<TaskUser> taskUsers = taskUserRepository.findByTask(task);
                 for (TaskUser tu : taskUsers) {
                     if (tu.getReader().getUser().getId().equals(user.getId())){
+
+                        content.put("task", task);
+                        content.put("role", mem.getRole());
+                        content.put("taskUsers", tu);
+
                         return ResponseEntity
                                 .status(HttpStatus.OK)
-                                .body(task);
+                                .body(content);
                     }
                 }
             }
             else {
+                content.put("task", task);
+                content.put("role", mem.getRole());
+                content.put("taskUsers", taskUserRepository.findByTask(task));
+
                 return ResponseEntity
                         .status(HttpStatus.OK)
-                        .body(task);
+                        .body(content);
             }
         }
         return ResponseEntity
@@ -90,6 +99,35 @@ public class TaskRestController {
             ProjectUser mem = members.get(0);
             if (!mem.getRole().getName().equals("READER")) {
                 task.setArchive(true);
+
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(taskRepository.save(task));
+            }
+        }
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("У вас нет доступа к этой задаче");
+    }
+
+    @PutMapping("/{id}/edit")
+    public ResponseEntity editTask(@PathVariable(value = "id") Task task,
+                                   @RequestBody String request,
+                                   @AuthenticationPrincipal User user) {
+        JSONObject data = new JSONObject(request);
+        if (!task.getProject().getActive()){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Проект находится в архиве");
+        }
+        List<ProjectUser> members = projectUserRepository.findByProject(task.getProject()).stream().filter(m -> m.getUser().getId().equals(user.getId())).toList();
+        if (members.size() > 0){
+            ProjectUser mem = members.get(0);
+            if (!mem.getRole().getName().equals("READER")) {
+
+                task.setName(data.getString("name"));
+                task.setDescription(data.getString("description"));
+                task.setEditDatetime(LocalDateTime.now());
 
                 return ResponseEntity
                         .status(HttpStatus.OK)

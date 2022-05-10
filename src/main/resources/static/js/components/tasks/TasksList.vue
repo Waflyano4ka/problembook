@@ -1,6 +1,6 @@
 <template>
   <v-row align="start" class="px-4 pb-0 pt-4">
-    <v-col>
+    <v-col :cols="OBJECT.active ? 8 : 12">
       <v-list subheader two-line>
         <task-group v-for="group in GROUPTASKS"
                   :key="group.id"
@@ -23,9 +23,11 @@
           </v-card-subtitle>
           <v-textarea v-if="daily"
                       name="dailyTextChanged"
+                      :rules="[() => !!dailyTextChanged && dailyTextChanged.length <= 250 || 'Повестка дня должна быть быть не больше 250 символов']"
                       v-model="dailyTextChanged"
                       style="margin-top: -24px"
                       color="accent"
+                      counter
           ></v-textarea>
           <v-layout align-center justify-space-around row v-if="daily">
             <v-col cols="6" class="pb-0">
@@ -81,7 +83,8 @@ export default {
       this.changeDaily()
     },
     Apply() {
-      this.CHANGE_DAILY_MESSAGE(this.dailyTextChanged)
+      if (this.dailyTextChanged.length <= 250)
+        this.CHANGE_DAILY_MESSAGE(this.dailyTextChanged)
 
       this.changeDaily()
     }

@@ -1,6 +1,9 @@
 package diplom.problembook.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class TaskUser {
@@ -8,6 +11,8 @@ public class TaskUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Boolean complete;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime datetime;
     @ManyToOne(optional = true)
     private ProjectUser reader;
     @ManyToOne(optional = true)

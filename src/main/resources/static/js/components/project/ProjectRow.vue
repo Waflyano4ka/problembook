@@ -69,9 +69,9 @@
       <v-spacer />
       <v-card-text class="ps-0 pt-0">
         <v-sheet class="pt-1 rounded-br-xl">
-          <v-divider class="mb-3"/>
+          <v-divider class="mb-3" v-if="projectUser.project.dailyMessage"/>
           <div class="font-weight-bold ml-8 pb-2">
-            Пусто
+            {{ projectUser.project.dailyMessage }}
           </div>
         </v-sheet>
       </v-card-text>
