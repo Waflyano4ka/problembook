@@ -1,5 +1,5 @@
 import axios from "axios";
-import router from '../../router/index'
+import router from '../../router'
 
 const resourceApi = '/api/tasks'
 
@@ -18,7 +18,6 @@ const actions = {
             const response = await axios.put(resourceApi + '/' + idProject + '/daily', {data: message})
             commit('EDIT_PROJECT_TO_STATE', response.data)
         } catch (err) {
-            console.error(err)
             await this.dispatch('SET_SNACKBAR', {
                 text: err.response.data,
                 color: "error"

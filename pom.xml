@@ -82,8 +82,15 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
+	<packaging>war</packaging>
 	<build>
 		<plugins>
 			<plugin>
@@ -92,5 +99,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

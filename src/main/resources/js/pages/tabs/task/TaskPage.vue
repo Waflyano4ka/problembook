@@ -61,9 +61,9 @@
               elevation="3"
               shaped
           >
-            <v-card-text>
-              <v-card-title class="px-0">
-                <v-row class="px-3">
+            <v-card-text class="pb-0">
+              <v-card-title class="px-0 pb-0">
+                <v-row class="px-3 pb-0 mb-0">
                   <v-col class="pa-0">
                     <p>Срок сдачи:</p>
                   </v-col>
@@ -73,9 +73,18 @@
                 </v-row>
               </v-card-title>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions v-if="CURRENT_TASK_ROLE.name === 'READER'">
               <v-layout align-center justify-space-around column>
-
+                <complete-task v-if="!CURRENT_TASK_USER.complete" :taskUser="CURRENT_TASK_USER"/>
+                <v-list width="100%">
+                  <task-file v-if="CURRENT_TASK_USER.complete && CURRENT_TASK_USER.enableFile" :task-user="CURRENT_TASK_USER"/>
+                </v-list>
+                <v-btn v-if="CURRENT_TASK_USER.complete" block rounded color="error" class="ma-1" @click="uncomplete()">
+                  Отменить сдачу
+                  <v-icon right dark>
+                    mdi-cancel
+                  </v-icon>
+                </v-btn>
               </v-layout>
             </v-card-actions>
           </v-card>
@@ -88,20 +97,25 @@
 <script>
 import DeleteTaskButton from '../../../components/task/DeleteTaskButton.vue'
 import EditTaskButton from '../../../components/task/EditTaskButton.vue'
+import CompleteTask from './CompleteTask.vue'
+import TaskFile from './TaskFile.vue'
 
 import {mapActions, mapGetters} from "vuex";
 
 export default {
   components: {
-    DeleteTaskButton, EditTaskButton
+    DeleteTaskButton, EditTaskButton, CompleteTask, TaskFile
   },
   computed: {
-    ...mapGetters(['TASK', 'CURRENT_TASK_ROLE']),
+    ...mapGetters(['TASK', 'CURRENT_TASK_ROLE', 'CURRENT_TASK_USER']),
   },
   methods: {
-    ...mapActions(['GET_TASK_FORM_DB', 'DELETE_TASK_FORM_DB']),
+    ...mapActions(['GET_TASK_FORM_DB', 'DELETE_TASK_FORM_DB', 'COMPLETE_TASK_ON_DB']),
     deleteTask() {
       this.DELETE_TASK_FORM_DB()
+    },
+    uncomplete() {
+      this.COMPLETE_TASK_ON_DB()
     }
   },
   mounted() {

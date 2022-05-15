@@ -11,6 +11,8 @@ public class TaskUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Boolean complete;
+    private Boolean enableFile;
+    private String filename;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime datetime;
     @ManyToOne(optional = true)
@@ -39,6 +41,18 @@ public class TaskUser {
     public Boolean getComplete() {
         return complete;
     }
+
+    public Boolean getEnableFile() { return enableFile; }
+
+    public void setEnableFile(Boolean enableFile) { this.enableFile = enableFile; }
+
+    public String getFilename() { return filename; }
+
+    public void setFilename(String filename) { this.filename = filename; }
+
+    public LocalDateTime getDatetime() { return datetime; }
+
+    public void setDatetime(LocalDateTime datetime) { this.datetime = datetime;}
 
     public void setComplete(Boolean complete) {
         this.complete = complete;

@@ -56,7 +56,7 @@
 <script>
 import TaskCreate from './TaskCreate.vue'
 import TaskGroup from './TaskGroup.vue'
-import GroupList from './../groups/GroupList.vue'
+import GroupList from '../groups/GroupList.vue'
 import {mapActions, mapState, mapGetters} from "vuex";
 import router from "../../router";
 

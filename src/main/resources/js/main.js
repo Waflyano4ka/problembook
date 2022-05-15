@@ -4,8 +4,8 @@ import VueRouter from 'vue-router'
 import App from './pages/App.vue'
 
 import 'vuetify/dist/vuetify.min.css'
-import router from './router/index'
-import store from './store/index'
+import router from './router'
+import store from './store'
 import colors from 'vuetify/lib/util/colors'
 
 Vue.use(Vuetify)
