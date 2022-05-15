@@ -5,7 +5,7 @@
     </v-list-item-avatar>
 
     <v-list-item-content>
-      <v-list-item-title class="clip" v-text="taskUser.filename.split('.')[1]"></v-list-item-title>
+      <v-list-item-title class="clip" v-text="taskUser.filename.substring(taskUser.filename.indexOf('.') + 1)"></v-list-item-title>
 
       <v-list-item-subtitle class="clip"> {{ 'Загружен: ' + taskUser.datetime }} </v-list-item-subtitle>
     </v-list-item-content>

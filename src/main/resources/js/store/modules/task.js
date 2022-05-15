@@ -18,7 +18,18 @@ const getters = {
 const actions = {
     async DOWNLOAD_FILE({ commit }, filename) {
         try {
-            await router.push({name: 'Download', params: {filename: filename}})
+            const res = await axios.get(resourceApi + '/file/' + filename, { responseType: 'blob' })
+            const downloadUrl = window.URL.createObjectURL(new Blob([res.data]))
+
+            const fileName = filename.substring(filename.indexOf(".") + 1)
+
+            const link = document.createElement('a')
+            link.href = downloadUrl
+            link.download = decodeURI(fileName)
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+
         } catch (err) {
             await this.dispatch('SET_SNACKBAR', {
                 text: err,

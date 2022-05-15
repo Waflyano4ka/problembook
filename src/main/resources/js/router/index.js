@@ -17,7 +17,5 @@ export default new VueRouter({
         { path: '/archive/:id', name: 'archivePage', component: ArchivePage},
         { path: '/task/:id', name: 'taskPage', component: TaskPage},
         { path: "*", component: MainPage},
-
-        { path: '/api/task/file/:filename', name: 'Download'},
     ]
 })
