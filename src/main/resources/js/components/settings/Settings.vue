@@ -39,6 +39,8 @@
       </v-color-picker>
     </v-layout>
     <v-layout align-start justify-end class="mt-9">
+      <v-toolbar-title><span class="text-subtitle-1">{{ 'Код подключения: ' }}</span> {{ key }}</v-toolbar-title>
+      <v-spacer/>
       <v-btn color="accent" @click="cancel" class="ms-3" outlined>
         Сбросить
       </v-btn>

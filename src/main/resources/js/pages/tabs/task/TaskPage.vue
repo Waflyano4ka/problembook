@@ -1,7 +1,7 @@
 <template>
   <v-container class="px-12 pt-0">
     <v-card flat class="rounded-t-xl mt-9" style="padding-top: 1px">
-      <v-toolbar :color="TASK.project.color" extended flat class="pt-0" height="64px" style="border-top-left-radius: 32px;">
+      <v-toolbar :color="TASK.project.color" extended flat :class="TASK.project.active ? ' ' : 'repeating-gradient' + ' pt-0'" height="64px" style="border-top-left-radius: 32px;">
         <v-sheet style="padding-left: 16px; padding-right: 24px; margin-left: -16px; margin-top: -32px"
                  class="rounded-br-xl rounded-tl-xl" max-width="calc(100% - 70px)">
           <v-toolbar-title class="nav-text-title text-h5 font-weight-medium text-hover-title" v-text="TASK.project.name"
@@ -54,6 +54,26 @@
               </v-card-text>
             </v-card-text>
           </v-card>
+          <v-list v-if="CURRENT_TASK_ROLE.name !== 'READER'" elevation="4" class="ms-3 me-5 mt-6 rounded-bl-xl">
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title class="text-h6">Сдали: </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <complete-task-row v-for="taskUser in CURRENT_TASK_USER.filter(task => task.complete)"
+                               :key="taskUser.id"
+                               :taskUser="taskUser">
+            </complete-task-row>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title class="text-h6">Не cдали: </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <complete-task-row v-for="taskUser in CURRENT_TASK_USER.filter(task => !task.complete)"
+                               :key="taskUser.id"
+                               :taskUser="taskUser">
+            </complete-task-row>
+          </v-list>
         </v-col>
         <v-col cols="3">
           <v-card
@@ -73,7 +93,7 @@
                 </v-row>
               </v-card-title>
             </v-card-text>
-            <v-card-actions v-if="CURRENT_TASK_ROLE.name === 'READER'">
+            <v-card-actions v-if="CURRENT_TASK_ROLE.name === 'READER' && CURRENT_TASK_USER.task.project.active">
               <v-layout align-center justify-space-around column>
                 <complete-task v-if="!CURRENT_TASK_USER.complete" :taskUser="CURRENT_TASK_USER"/>
                 <v-list width="100%">
@@ -97,14 +117,15 @@
 <script>
 import DeleteTaskButton from '../../../components/task/DeleteTaskButton.vue'
 import EditTaskButton from '../../../components/task/EditTaskButton.vue'
-import CompleteTask from './CompleteTask.vue'
-import TaskFile from './TaskFile.vue'
+import CompleteTask from '../../../components/task/CompleteTask.vue'
+import TaskFile from '../../../components/task/TaskFile.vue'
+import CompleteTaskRow from '../../../components/task/CompleteTaskRow.vue'
 
 import {mapActions, mapGetters} from "vuex";
 
 export default {
   components: {
-    DeleteTaskButton, EditTaskButton, CompleteTask, TaskFile
+    DeleteTaskButton, EditTaskButton, CompleteTask, TaskFile, CompleteTaskRow
   },
   computed: {
     ...mapGetters(['TASK', 'CURRENT_TASK_ROLE', 'CURRENT_TASK_USER']),
@@ -133,5 +154,13 @@ export default {
     white-space: nowrap; /* Запрещаем перенос строк */
     overflow: hidden; /* Обрезаем все, что не помещается в область */
     text-overflow: ellipsis; /* Добавляем многоточие */
+  }
+  .repeating-gradient {
+    background-image: repeating-linear-gradient(-45deg,
+    rgba(255,0,0,.25),
+    rgba(255,0,0,.25) 5px,
+    rgba(0,0,255,.25) 5px,
+    rgba(0,0,255,.25) 10px
+    );
   }
 </style>

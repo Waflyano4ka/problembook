@@ -41,7 +41,13 @@ public class TaskRestController {
         this.taskUserRepository = taskUserRepository;
     }
 
-
+    /**
+     * Получение информации о задаче
+     *
+     * @param task Задача
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity Данные о задаче
+     */
     @GetMapping("/{id}")
     public ResponseEntity getTask(@PathVariable(value = "id") Task task,
                                    @AuthenticationPrincipal User user) {
@@ -87,11 +93,24 @@ public class TaskRestController {
     @Value("${upload.path}")
     private String uploadPath;
 
+    /**
+     * Выполнение задачи
+     *
+     * @param taskUser Задание-пользователь
+     * @param file Файл
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity Данные о выполненом задании
+     */
     @PostMapping ("/{id}/complete")
     public ResponseEntity completeTask(@PathVariable(value = "id") TaskUser taskUser,
                                        @RequestParam("file") MultipartFile file,
                                        @AuthenticationPrincipal User user
     ) {
+        if (!taskUser.getTask().getProject().getActive()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Проект в архиве");
+        }
         if (taskUser.getReader().getUser().getId().equals(user.getId())){
             if (!file.isEmpty()) {
                 File uploadDir = new File(uploadPath);
@@ -126,10 +145,21 @@ public class TaskRestController {
                 .body("У вас нет доступа к этой задаче");
     }
 
+    /**
+     * Выполнение задания без загрузки файла
+     * @param taskUser Задание-пользователь
+     * @param user Данные аунтификации пользователя
+     * @return ResponseEntity
+     */
     @GetMapping ("/{id}/complete")
     public ResponseEntity completeTask(@PathVariable(value = "id") TaskUser taskUser,
                                        @AuthenticationPrincipal User user
     ) {
+        if (!taskUser.getTask().getProject().getActive()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Проект в архиве");
+        }
         if (taskUser.getReader().getUser().getId().equals(user.getId())){
             taskUser.setEnableFile(false);
             if (taskUser.getComplete())
@@ -148,6 +178,12 @@ public class TaskRestController {
                 .body("У вас нет доступа к этой задаче");
     }
 
+    /**
+     * Загрузка файла на клиенте
+     *
+     * @param filename Файл
+     * @param response Отправка файла на клиент
+     */
     @GetMapping ("/file/{filename:.+}")
     public void downloadFile(@PathVariable String filename,
                              HttpServletResponse response

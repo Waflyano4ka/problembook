@@ -73,9 +73,11 @@ public class RoleRestController {
                                     changedProject.setRole(roleRepository.findByName(roleName).get(0));
                                     changedProjectUsers.add(projectUserRepository.save(changedProject));
                                 }
-                                return ResponseEntity
-                                        .status(HttpStatus.BAD_REQUEST)
-                                        .body("Пользователь не состоит в проекте");
+                                else {
+                                    return ResponseEntity
+                                            .status(HttpStatus.BAD_REQUEST)
+                                            .body("Пользователь не состоит в проекте");
+                                }
                             }
                         }
                     }
