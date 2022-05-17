@@ -7,6 +7,7 @@
 
       <v-spacer></v-spacer>
 
+      <!--
       <v-btn @click="theme" icon x-large class="me-3">
         <v-icon v-if="$vuetify.theme.dark" color="accent" size="36">
           mdi-weather-night
@@ -15,6 +16,7 @@
           mdi-white-balance-sunny
         </v-icon>
       </v-btn>
+      -->
 
       <problem-avatar :profile="profile"/>
     </v-app-bar>
