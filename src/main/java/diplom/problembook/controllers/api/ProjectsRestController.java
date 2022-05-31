@@ -43,7 +43,6 @@ public class ProjectsRestController {
     @GetMapping
     public Iterable<ProjectUser> get(@AuthenticationPrincipal User user){
         return projectUserRepository.findByUser(user).stream().filter(ProjectUser::getAccess).filter(ProjectUser::ProjectUserNotDeleted).toList();
-        //TODO Реализовать поиск на фронте
     }
 
     /**

@@ -25,6 +25,9 @@
             {{ profile.email }}
           </p>
           <v-divider class="my-3"></v-divider>
+          <v-btn text @click="mobile">
+            Мобилка
+          </v-btn>
           <v-btn text href="/logout">
             Выйти
           </v-btn>
@@ -35,7 +38,7 @@
 </template>
 
 <script>
-  import { mapState } from "vuex";
+import {mapActions, mapState} from "vuex";
 
   export default {
     computed: mapState(['profile']),
@@ -45,6 +48,12 @@
         email: 'john.doe@doe.com',
       },
     }),
+    methods: {
+      ...mapActions(['GET_MOBILE_TOKEN']),
+      mobile(){
+        this.GET_MOBILE_TOKEN()
+      }
+    }
   }
 </script>
 

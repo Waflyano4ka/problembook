@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>diplom</groupId>
 	<artifactId>problembook</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<name>problembook</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -90,7 +90,7 @@
 		</dependency>
 	</dependencies>
 
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<build>
 		<plugins>
 			<plugin>

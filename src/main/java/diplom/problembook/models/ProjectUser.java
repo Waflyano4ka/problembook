@@ -65,4 +65,20 @@ public class ProjectUser {
             return !deleted;
         return true;
     }
+
+    public Boolean ProjectNotArchived() {
+        return project.getActive();
+    }
+
+    public Boolean ProjectArchived() {
+        return !project.getActive();
+    }
+
+    public Integer ProjectUnliked() {
+        return this.liked ? 0 : 1;
+    }
+
+    public String ProjectName() {
+        return this.project.getName();
+    }
 }

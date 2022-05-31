@@ -19,6 +19,7 @@ public class User implements Serializable {
     private String email;
     private String gender;
     private String locale;
+    private String mobileToken;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastVisit;
 
@@ -88,4 +89,8 @@ public class User implements Serializable {
     public void setLastVisit(LocalDateTime lastVisit) {
         this.lastVisit = lastVisit;
     }
+
+    public String getMobileToken() { return mobileToken; }
+
+    public void setMobileToken(String mobileToken) { this.mobileToken = mobileToken; }
 }
